@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <h1>Firebase Connection Test</h1>
+    <button onclick="testFirebase()">Test Firebase Connection</button>
+    <button onclick="testWrite()">Test Write to Database</button>
+    <div id="results"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, query, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCOCVaPPPF0J1GRnrPV-cy3KGdDvBJmdKY",
+            authDomain: "l-amour-jewelry.firebaseapp.com",
+            projectId: "l-amour-jewelry",
+            storageBucket: "l-amour-jewelry.firebasestorage.app",
+            messagingSenderId: "781244207566",
+            appId: "1:781244207566:web:73c2840a5368afa6701b9f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.testFirebase = async function() {
+            try {
+                console.log('Testing Firebase connection...');
+                console.log('Firebase config:', firebaseConfig);
+                console.log('Firebase app:', app);
+                console.log('Firestore DB:', db);
+
+                // Test read operation
+                const testQuery = query(collection(db, 'test'), limit(1));
+                const querySnapshot = await getDocs(testQuery);
+                console.log('Read test successful, documents found:', querySnapshot.size);
+
+                document.getElementById('results').innerHTML = '<p style="color: green;">✅ Firebase connection successful!</p>';
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Firebase Connected!',
+                    text: 'Firebase connection test passed successfully.'
+                });
+
+            } catch (error) {
+                console.error('Firebase test failed:', error);
+                document.getElementById('results').innerHTML = `<p style="color: red;">❌ Firebase test failed: ${error.message}</p>`;
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Firebase Test Failed',
+                    text: error.message
+                });
+            }
+        };
+
+        window.testWrite = async function() {
+            try {
+                console.log('Testing write to Firebase...');
+                
+                const testData = {
+                    test: true,
+                    timestamp: new Date(),
+                    message: 'This is a test write operation'
+                };
+
+                const docRef = await addDoc(collection(db, 'test'), testData);
+                console.log('Write test successful, document ID:', docRef.id);
+
+                document.getElementById('results').innerHTML += '<p style="color: green;">✅ Write test successful! Document ID: ' + docRef.id + '</p>';
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Write Test Successful!',
+                    text: 'Successfully wrote to Firebase database. Document ID: ' + docRef.id
+                });
+
+            } catch (error) {
+                console.error('Write test failed:', error);
+                document.getElementById('results').innerHTML += `<p style="color: red;">❌ Write test failed: ${error.message}</p>`;
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Write Test Failed',
+                    text: error.message
+                });
+            }
+        };
+    </script>
+</body>
+</html> 
