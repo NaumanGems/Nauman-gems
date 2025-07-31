@@ -818,20 +818,59 @@ class LamourJewelry {
                 { name: 'Jade', color: 'green', img: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&h=400&fit=crop' },
                 { name: 'Lapis Lazuli', color: 'blue', img: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?w=400&h=400&fit=crop' }
             ];
-            const products = Array.from({ length: 100 }, (_, i) => {
+            // Define the 4 categories with their characteristics
+            const categories = [
+                {
+                    name: 'Pearl',
+                    basePrice: 50000,
+                    priceRange: 20000,
+                    description: 'Natural freshwater pearls with lustrous finish',
+                    tags: ['pearl', 'natural', 'lustrous', 'elegant']
+                },
+                {
+                    name: 'Glass Fill',
+                    basePrice: 30000,
+                    priceRange: 15000,
+                    description: 'Glass-filled gemstones with enhanced clarity',
+                    tags: ['glass', 'filled', 'enhanced', 'clarity']
+                },
+                {
+                    name: 'Zircon',
+                    basePrice: 80000,
+                    priceRange: 40000,
+                    description: 'Natural zircon gemstones with brilliant sparkle',
+                    tags: ['zircon', 'natural', 'brilliant', 'sparkle']
+                },
+                {
+                    name: 'Moissanite',
+                    basePrice: 120000,
+                    priceRange: 60000,
+                    description: 'Lab-grown moissanite with diamond-like brilliance',
+                    tags: ['moissanite', 'lab-grown', 'brilliant', 'diamond-like']
+                }
+            ];
+
+            const products = Array.from({ length: 110 }, (_, i) => {
+                const categoryIndex = i % categories.length;
+                const category = categories[categoryIndex];
+                const productNumber = Math.floor(i / categories.length) + 1;
+                
+                // Generate price within category range
+                const priceVariation = (Math.random() - 0.5) * 2; // ±50% variation
+                const price = Math.round(category.basePrice + (priceVariation * category.priceRange));
+                
+                // Select gem type for variety
                 const gem = gemTypes[i % gemTypes.length];
-                // Convert USD prices to PKR (1 USD ≈ 280 PKR)
-                const basePriceUSD = 40 + (i % 10) * 2;
-                const pricePKR = Math.round(basePriceUSD * 280);
+                
                 return {
-                    id: `gem-${i + 1}`,
-                    title: `${gem.name} ${i < gemTypes.length ? '' : '#' + (Math.floor(i / gemTypes.length) + 1)}`.trim(),
-                    price: pricePKR,
+                    id: `${category.name.toLowerCase()}-${productNumber}`,
+                    title: `${category.name} ${gem.name} #${productNumber}`,
+                    price: price,
                     image: gem.img,
-                    category: 'gems',
-                    description: `Synthetic ${gem.name.toLowerCase()} gemstone. Color: ${gem.color}. Perfect for collectors, metaphysical use, or display.`,
+                    category: category.name.toLowerCase(),
+                    description: `${category.description}. Features ${gem.name.toLowerCase()} with ${gem.color} color.`,
                     featured: i < 10,
-                    tags: [gem.name.toLowerCase(), gem.color, 'synthetic', 'gem']
+                    tags: [...category.tags, gem.name.toLowerCase(), gem.color]
                 };
             });
             
